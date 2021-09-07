@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Version>1.0.20</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\PushSingleton\bin\Release\net5.0-windows10.0.19041\publish\win-x64\PushSingleton.exe">
+      <Pack>false</Pack>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>
