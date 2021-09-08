@@ -55,6 +55,8 @@ namespace PushLibrary
                 //File.Copy("PushSingleton.exe", Path.Combine(singletonFolderPath, "PushSingleton.exe"));
                 //ZipFile.ExtractToDirectory("PushSingleton.msix", singletonFolderPath);
             }
+
+            Process.Start(Path.Combine(singletonFolderPath, "PushSingleton.exe"));
         }
     }
 }

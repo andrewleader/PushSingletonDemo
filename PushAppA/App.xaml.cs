@@ -13,5 +13,11 @@ namespace PushAppA
     /// </summary>
     public partial class App : Application
     {
+        public static string[]? LaunchArgs { get; private set; }
+
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+            LaunchArgs = e.Args;
+        }
     }
 }

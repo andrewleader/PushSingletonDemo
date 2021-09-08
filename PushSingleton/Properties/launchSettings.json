@@ -1,8 +1,7 @@
 {
   "profiles": {
     "PushSingleton": {
-      "commandName": "Project",
-      "commandLineArgs": "-n -a AppA"
+      "commandName": "Project"
     }
   }
 }

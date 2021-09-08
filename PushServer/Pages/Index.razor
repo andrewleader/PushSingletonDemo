@@ -1,0 +1,36 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.SignalR
+@using PushServer.Hubs
+@inject IHubContext<PushHub> HubContext;
+
+<h1>PushServer</h1>
+
+<p>Welcome to the push demo. Enter an AppId and message and click send to send a push notification.</p>
+
+<p>
+	<label>
+		AppId <input @bind="AppId"/>
+	</label>
+</p>
+
+<p>
+	<label>
+		Message <input @bind="Message"/>
+	</label>
+</p>
+
+<button class="btn btn-primary" @onclick="SendPush">Send</button>
+
+<p>@SentText</p>
+
+@code {
+	private string AppId {get;set;}
+	private string Message { get; set; }
+	private string SentText { get; set; }
+
+	private async void SendPush()
+	{
+		await HubContext.Clients.All.SendAsync("ReceivePush", AppId, Message);
+		SentText = "Sent on " + DateTime.Now.ToString("t");
+	}
+}

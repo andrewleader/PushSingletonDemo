@@ -24,6 +24,12 @@ namespace PushAppA
         public MainWindow()
         {
             InitializeComponent();
+
+            if (App.LaunchArgs != null && App.LaunchArgs.Length == 2)
+            {
+                InfoText.Text += ". Message: " + App.LaunchArgs[1];
+            }
+
         }
 
         private async void ButtonRegister_Click(object sender, RoutedEventArgs e)

@@ -5,10 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PushAppB"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="App B" Height="450" Width="800">
     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
         <TextBlock
-            Text="App B"
+            x:Name="InfoText"
+            Text="AppId: AppB"
             FontWeight="Bold"
             TextAlignment="Center"
             Margin="0, 0, 0, 24"/>
@@ -18,5 +19,9 @@
             Click="ButtonRegister_Click"
             HorizontalAlignment="Center"
             Padding="12"/>
+        <TextBlock
+            Text="https://pushsingletondemo.azurewebsites.net/"
+            HorizontalAlignment="Center"
+            Margin="0, 12, 0, 0"/>
     </StackPanel>
 </Window>

@@ -1,9 +1,11 @@
 ﻿using CommandLine;
+using Microsoft.AspNetCore.SignalR.Client;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace PushSingleton
@@ -61,7 +63,47 @@ namespace PushSingleton
             }
             else
             {
-                Console.WriteLine("Push service 1.0 started...");
+                using (var mutex = new Mutex(false, "PushSingleton"))
+                {
+                    if (!mutex.WaitOne(TimeSpan.Zero))
+                    {
+                        Console.WriteLine("Already running...");
+                        return;
+                    }
+
+                    Console.WriteLine("Push service 1.0 starting...");
+
+                    var connection = new HubConnectionBuilder()
+                        .WithUrl("https://pushsingletondemo.azurewebsites.net/pushHub")
+                        .Build();
+
+                    await connection.StartAsync();
+
+                    Console.WriteLine("Push service 1.0 started! Waiting for messages...");
+
+                    connection.On<string, string>("ReceivePush", (appId, message) =>
+                    {
+                        Console.WriteLine("Push received [" + appId + "]: " + message);
+
+                        try
+                        {
+                            NotifyApp(appId, message);
+                        }
+                        catch { }
+                    });
+
+                    connection.Closed += async (error) =>
+                    {
+                        Console.WriteLine("Reconnecting...");
+                        await Task.Delay(new Random().Next(0, 5) * 1000);
+                        await connection.StartAsync();
+                    };
+
+                    while (true)
+                    {
+                        await Task.Delay(1000);
+                    }
+                }
 
                 Console.WriteLine("\nRegistered apps...");
 
@@ -71,9 +113,27 @@ namespace PushSingleton
                 }
             }
 
-            await Task.Delay(2000);
-
             Console.WriteLine("Shutting down...");
+        }
+
+        private static void NotifyApp(string appId, string message)
+        {
+            if (GetRegisteredApps().TryGetValue(appId, out string appExe))
+            {
+                Console.WriteLine($"Using EXE {appExe}...");
+
+                try
+                {
+                    Process.Start(appExe, new string[] { "-pushNotification", message });
+                    Console.WriteLine("Notified!");
+                }
+                catch { Console.WriteLine("Failed to notify"); }
+
+            }
+            else
+            {
+                Console.WriteLine("App was not registered.");
+            }
         }
 
         private static string RegisteredAppsPath = Path.Combine(Directory.GetParent(Process.GetCurrentProcess().MainModule.FileName).FullName, "registeredApps.json");
